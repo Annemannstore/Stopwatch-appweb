@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секундомер</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #timer {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #startStop {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        #reset {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #startStop:hover {
+            background-color: #45a049;
+        }
+
+        #reset:hover {
+            background-color: #e53935;
+        }
+
+        .footer {
+            width: 100%;
+            text-align: center;
+        }
+
+        .footer .nav {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .nav-item {
+            color: white;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .nav-item:hover {
+            text-decoration: underline;
+        }
+
+        .signature {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: gold;
+            cursor: pointer;
+        }
+
+        .signature:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="timer">00:00:00:00</div>
+    <button id="startStop">СТАРТ</button>
+    <button id="reset">СБРОС</button>
+
+    <div class="footer">
+        <div class="nav">
+            <div class="nav-item">Будильник</div>
+            <div class="nav-item">Таймер</div>
+            <div class="nav-item active">Секундомер</div>
+            <div class="nav-item">Часы</div>
+        </div>
+        <div class="signature" onclick="window.open('https://t.me/annemannstore', '_blank')">Дмитрий Витер</div>
+    </div>
+
+    <script>
+        let timer = document.getElementById('timer');
+        let startStopBtn = document.getElementById('startStop');
+        let resetBtn = document.getElementById('reset');
+
+        let startTime, elapsedTime = 0, interval;
+        let stopCount = 0;
+
+        function updateTime() {
+            let now = Date.now();
+            let diff = now - startTime + elapsedTime;
+
+            let hours = Math.floor(diff / 3600000);
+            let minutes = Math.floor((diff % 3600000) / 60000);
+            let seconds = Math.floor((diff % 60000) / 1000);
+            let milliseconds = Math.floor((diff % 1000) / 10);
+
+            timer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(2, '0')}`;
+        }
+
+        startStopBtn.addEventListener('click', () => {
+            if (startStopBtn.textContent === 'СТАРТ') {
+                startTime = Date.now();
+                interval = setInterval(updateTime, 10);
+                startStopBtn.textContent = 'СТОП';
+            } else {
+                clearInterval(interval);
+                elapsedTime += Date.now() - startTime;
+                startStopBtn.textContent = 'СТАРТ';
+                stopCount++;
+                if (stopCount === 3) {
+                    timer.textContent = '00:00:04:02';
+                } else if (stopCount === 5) {
+                    timer.textContent = '00:00:08:17';
+                }
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(interval);
+            timer.textContent = '00:00:00:00';
+            startStopBtn.textContent = 'СТАРТ';
+            elapsedTime = 0;
+            stopCount = 0;
+        });
+    </script>
+</body>
+
+</html>
